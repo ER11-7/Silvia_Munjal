@@ -4,3 +4,4 @@ python-jose[cryptography]
 pwdlib[argon2]
 pydantic
 starlette
+gunicorn
