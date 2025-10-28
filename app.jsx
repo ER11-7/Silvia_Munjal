@@ -182,8 +182,8 @@ const AIAssistant = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // --- CONFIGURATION ---
-    // REPLACE THIS WITH THE LIVE URL YOU GET FROM RENDER (e.g., https://silvia-advocate-api.onrender.com)
-    const BASE_API_URL = "https://your-live-fastapi-url.onrender.com"; 
+    // The final live URL from Render deployment
+    const BASE_API_URL = "https://silvia-munjal.onrender.com"; 
     // ---------------------
 
     // Makes the API call to the Python Backend /qa-chatbot endpoint
@@ -276,8 +276,8 @@ const SecurePortal = ({ setIsLoggedIn, isLoggedIn }) => {
     const [uploadStatus, setUploadStatus] = useState(null);
 
     // --- CONFIGURATION ---
-    // REPLACE THIS WITH THE LIVE URL YOU GET FROM RENDER (e.g., https://silvia-advocate-api.onrender.com)
-    const BASE_API_URL = "https://your-live-fastapi-url.onrender.com"; 
+    // The final live URL from Render deployment
+    const BASE_API_URL = "https://silvia-munjal.onrender.com"; 
     // ---------------------
 
     const handleLogin = async (e) => {
