@@ -182,7 +182,7 @@ const AIAssistant = () => {
     const [isLoading, setIsLoading] = useState(false);
 
     // --- CONFIGURATION ---
-    // The final live URL from Render deployment
+    // FINAL LIVE URL FROM RENDER DEPLOYMENT
     const BASE_API_URL = "https://silvia-munjal.onrender.com"; 
     // ---------------------
 
@@ -213,7 +213,7 @@ const AIAssistant = () => {
 
         } catch (error) {
             console.error("AI API Call Failed:", error);
-            const errorMessage = { sender: 'ai', text: "Error connecting to AI service. Check API URL in App.jsx.", id: Date.now() + 1 };
+            const errorMessage = { sender: 'ai', text: "Error connecting to AI service. Check API status and CORS settings.", id: Date.now() + 1 };
             setChatHistory(prev => [...prev, errorMessage]);
         } finally {
             setIsLoading(false);
