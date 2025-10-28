@@ -1,256 +1,597 @@
-from fastapi import FastAPI, Depends, HTTPException, status, APIRouter, Body, UploadFile, File
-from fastapi.security import OAuth2PasswordBearer
-from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List, Dict, Any
-from datetime import datetime, timedelta, timezone
-from jose import jwt, JWTError
-from pwdlib import PasswordHash
-import uvicorn
-import os
-import uuid
-import time # For simulation delay
+import React, { useState, useEffect } from 'react';
+import { Aperture, BookOpen, Key, Users, MessageSquare, Briefcase, ChevronRight, Upload, FileText, Lock, CheckCircle, XCircle, Menu, X, Search, Globe, FileCheck, DollarSign } from 'lucide-react';
 
-# --- CONFIGURATION & SECRETS ---
+// --- DUMMY DATA SIMULATION (Replaces Headless CMS & FastAPI) ---
+const DUMMY_PUBLICATIONS = [
+  { id: 1, title: "Navigating Post-Brexit Trade Compliance for Indian Exporters", date: "Oct 2025", area: "Trade Contracts", summary: "An analysis of recent tariff changes and new documentation requirements for UK trade partners.", link: "#" },
+  { id: 2, title: "Mitigating Risk in Cross-Border E-Commerce Agreements", date: "Sep 2025", area: "Dispute Resolution", summary: "Strategies for protecting intellectual property and ensuring payment security in digital global sales.", link: "#" },
+  { id: 3, title: "The Legal Guide to Global OEM & Export Manufacturing Contracts", date: "Aug 2025", area: "Trade Contracts", summary: "Essential guide for protecting new technology and trademarks in the pre-seed funding stage.", link: "#" },
+  { id: 4, title: "Understanding Bilateral Investment Treaties (BITs) in Asia", date: "Jul 2025", area: "Compliance & Advisory", summary: "A review of how BITs impact foreign investment protection and dispute settlement mechanisms.", link: "#" },
+];
 
-# CRITICAL: Replace with a strong, complex secret key from environment variables
-SECRET_KEY = os.environ.get("SECRET_KEY", "YOUR_SUPER_SECURE_DEFAULT_KEY_CHANGE_ME_NOW")
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24 # 24 hours
+const DUMMY_DOCUMENTS = [
+    { id: 1, name: "Master Distributor Agreement (EU).pdf", date: "2025-10-25", status: "Reviewed", summary: "LLM Summary: The document outlines exclusive distribution clauses for the EU market. Key finding: No automatic renewal clause is present." },
+    { id: 2, name: "Draft Arbitration Notice - Project Beta.docx", date: "2025-10-20", status: "New", summary: "LLM Summary: A preliminary review suggests that the case is best suited for mediation under SIAC rules. Further document gathering on correspondence history is needed." },
+];
 
-# CORS Settings (Crucial for Decoupled Frontend)
-# Update this list with the actual domain of your React Frontend deployment
-ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-    "https://your-frontend-domain.com", # Replace this with the live domain
-    "https://*.app.github.dev" # For Codespaces testing
-]
+const PRACTICE_AREAS = [
+    "Export & Trade Contracts", "Compliance & Regulatory", "Dispute Resolution", "International Negotiations"
+];
 
-# --- INITIALIZE APP & MIDDLEWARE ---
+// --- NEW COLOR CODES FOR CLASSY/GOLD AESTHETIC ---
+const PRIMARY_ACCENT_COLOR = 'text-[#A98C6A]'; // Rich Tan/Gold
+const BUTTON_BG_COLOR = 'bg-[#A98C6A]';
+const HOVER_ACCENT_COLOR = 'hover:bg-[#8C755D]'; // Darker gold for buttons
+const LIGHT_HOVER_ACCENT_COLOR = 'hover:bg-amber-50'; // Light gold hover for links
+const BORDER_COLOR = 'border-[#A98C6A]';
 
-app = FastAPI(
-    title="Advocate Portfolio API Gateway",
-    description="Backend for Secure Portal and AI/RAG Services.",
-    version="1.0.0"
-)
+const BG_COLOR = 'bg-gray-50'; // Light background for professionalism
+const TEXT_COLOR_PRIMARY = 'text-gray-900';
+const TEXT_COLOR_SECONDARY = 'text-gray-600';
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+// --- Utility Components ---
 
-router = APIRouter()
+const Button = ({ children, onClick, primary = true, icon: Icon, className = '', type = 'button', disabled = false }) => (
+  <button
+    type={type}
+    onClick={onClick}
+    disabled={disabled}
+    className={`
+      flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition duration-300 shadow-md font-semibold text-sm
+      ${primary 
+        ? `${BUTTON_BG_COLOR} text-white ${HOVER_ACCENT_COLOR}` 
+        : `bg-white ${PRIMARY_ACCENT_COLOR} border ${BORDER_COLOR} ${LIGHT_HOVER_ACCENT_COLOR}`
+      }
+      ${className}
+      ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
+    `}
+  >
+    {Icon && <Icon size={20} />}
+    <span>{children}</span>
+  </button>
+);
 
-# --- SECURITY UTILITIES (JWT & Hashing) ---
+const Card = ({ children, className = '' }) => (
+    <div className={`p-6 bg-white rounded-lg shadow-lg border border-gray-200 ${className}`}>
+        {children}
+    </div>
+);
 
-# Use the recommended Argon2 hashing algorithm
-password_hash = PasswordHash.recommended()
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+// --- Page Components ---
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verifies a plain password against the stored hash."""
-    return password_hash.verify(plain_password, hashed_password)
+const HomePage = ({ setCurrentPage }) => (
+  <div className="space-y-16">
+    {/* Hero Section - Matching the Image Content */}
+    <div className="container mx-auto py-24 px-4 flex flex-col md:flex-row items-center justify-between gap-12">
+        
+        {/* Left Side: Text and CTA */}
+        <div className="md:w-1/2 text-center md:text-left">
+            <p className={`text-3xl font-extrabold ${TEXT_COLOR_PRIMARY} mb-2`}>Silvia Munjal</p>
+            <h1 className={`text-4xl md:text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR} leading-tight mb-4`}>
+                International Business & Trade Lawyer
+            </h1>
+            <p className={`text-xl font-serif italic ${PRIMARY_ACCENT_COLOR} mb-6`}>
+                "Securing Global Business, One Contract at a Time."
+            </p>
+            
+            <p className={`mt-6 text-lg ${TEXT_COLOR_SECONDARY} max-w-xl md:max-w-none`}>
+                Silvia Munjal is a trusted **International Business Lawyer** specializing in export & trade contracts, compliance, and cross-border dispute resolution. With over **500 contracts executed across 7+ countries**, she helps Indian businesses expand globally with confidence.
+            </p>
 
-def get_password_hash(password: str) -> str:
-    """Generates a secure hash for the password."""
-    return password_hash.hash(password)
+            {/* CTA Button */}
+            <div className="mt-10">
+                <Button onClick={() => setCurrentPage('Contact')} icon={MessageSquare} className="py-4 px-8 text-base">
+                    Book a Consultation Call
+                </Button>
+            </div>
+        </div>
 
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    """Creates a signed JWT access token."""
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.now(timezone.utc) + expires_delta
-    else:
-        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    
-    to_encode.update({"exp": expire, "sub": data.get("sub")})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+        {/* Right Side: Image Placeholder */}
+        <div className="md:w-1/2 flex justify-center md:justify-end">
+            <div className="w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#A98C6A]">
+                {/* The live site would use a proper URL for Silvia's professional photo */}
+                <img 
+                    src="https://placehold.co/800x800/A98C6A/FFFFFF?text=Silvia+Munjal+Advocate" 
+                    alt="Silvia Munjal, International Business Lawyer" 
+                    className="w-full h-full object-cover"
+                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/800x800/A98C6A/FFFFFF?text=Silvia+Munjal+Advocate" }}
+                />
+            </div>
+        </div>
+    </div>
 
-def decode_token(token: str) -> Dict[str, Any]:
-    """Decodes and validates a JWT token and returns payload."""
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            raise credentials_exception
-    except JWTError:
-        raise credentials_exception
-    return payload
+    {/* Stats Section - Matching the Document Content */}
+    <div className="bg-white py-12 border-t border-gray-200">
+        <div className="container mx-auto px-4 flex justify-around text-center">
+            <div className="w-1/3">
+                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>500+</p>
+                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Contracts Drafted & Negotiated</p>
+            </div>
+            <div className="w-1/3">
+                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>7+</p>
+                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Countries Served</p>
+            </div>
+            <div className="w-1/3">
+                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>30+</p>
+                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Overseas Clients</p>
+            </div>
+        </div>
+    </div>
 
-# --- DUMMY DATABASE/USER MOCK ---
-# In a real app, this would use SQLAlchemy/PostgreSQL
-class ClientUserDB(BaseModel):
-    email: EmailStr
-    hashed_password: str
-    is_active: bool = True
+    {/* Services Preview Section - Classy Layout */}
+    <div className="container mx-auto px-4 py-16">
+        <h2 className={`text-3xl font-bold ${TEXT_COLOR_PRIMARY} mb-10 text-center`}>Specialized Services</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="text-center">
+                <Globe size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
+                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Export & Trade Contracts</h3>
+                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Legally sound agreements for global trade and distribution channels.</p>
+            </Card>
+            <Card className="text-center">
+                <FileCheck size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
+                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Compliance & Regulatory</h3>
+                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Advisory for cross-border regulations, customs, and global legal frameworks.</p>
+            </Card>
+            <Card className="text-center">
+                <DollarSign size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
+                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Risk & Dispute Resolution</h3>
+                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Protecting businesses from costly disputes through proactive risk management and mediation.</p>
+            </Card>
+            <Card className="text-center">
+                <Briefcase size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
+                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Business Negotiations</h3>
+                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Securing favorable, long-term terms for international partnerships and ventures.</p>
+            </Card>
+        </div>
+        <div className="mt-12 text-center">
+            <Button primary={false} onClick={() => setCurrentPage('PracticeAreas')} icon={ChevronRight}>Learn More About Services</Button>
+        </div>
+      </div>
+  </div>
+);
 
-# Hash the default demo password "password" on startup
-DUMMY_USER_DB = {
-    "client@test.com": ClientUserDB(
-        email="client@test.com",
-        hashed_password=get_password_hash("password")
-    )
-}
+const PublicationsPage = () => {
+    const [selectedArea, setSelectedArea] = useState('All');
+    
+    // Simulate fetching content (would hit /api/publications in reality)
+    const filteredPublications = DUMMY_PUBLICATIONS.filter(p => selectedArea === 'All' || p.area === selectedArea);
 
-async def db_get_user(email: str) -> Optional[ClientUserDB]:
-    """Simulates looking up user in PostgreSQL."""
-    return DUMMY_USER_DB.get(email)
+    return (
+        <div className="container mx-auto py-16 px-4">
+            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2`}>Publications & Thought Leadership</h1>
+            <p className={`text-xl ${TEXT_COLOR_SECONDARY} mb-8`}>Access professional analysis and articles on recent legal developments.</p>
+            
+            {/* Filter Section (Requirement 2: Filterable) */}
+            <div className="mb-8 flex flex-wrap gap-3 items-center">
+                <span className={`font-medium ${TEXT_COLOR_PRIMARY} self-center mr-2 text-sm uppercase`}>Filter:</span>
+                <button
+                    onClick={() => setSelectedArea('All')}
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm 
+                        ${selectedArea === 'All' ? `${BUTTON_BG_COLOR} text-white` : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'}`}
+                >
+                    All Areas
+                </button>
+                {PRACTICE_AREAS.map(area => (
+                    <button
+                        key={area}
+                        onClick={() => setSelectedArea(area)}
+                        className={`px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm 
+                            ${selectedArea === area ? `${BUTTON_BG_COLOR} text-white` : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'}`}
+                    >
+                        {area}
+                    </button>
+                ))}
+            </div>
 
-# --- SCHEMAS ---
+            {/* List of Publications */}
+            <div className="space-y-6">
+                {filteredPublications.map(pub => (
+                    <Card key={pub.id} className="hover:ring-1 hover:ring-[#A98C6A] transition duration-300">
+                        <div className="flex justify-between items-start">
+                            <h2 className={`text-xl font-bold ${PRIMARY_ACCENT_COLOR}`}>{pub.title}</h2>
+                            <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">{pub.date}</span>
+                        </div>
+                        <p className={`text-sm ${TEXT_COLOR_SECONDARY} mt-1`}>{pub.area}</p>
+                        <p className={`mt-3 ${TEXT_COLOR_SECONDARY}`}>{pub.summary}</p>
+                        <a href={pub.link} className={`mt-3 inline-flex items-center text-sm font-semibold ${PRIMARY_ACCENT_COLOR} hover:${TEXT_COLOR_PRIMARY} transition`}>
+                            Read Full Article <ChevronRight size={16} className="ml-1" />
+                        </a>
+                    </Card>
+                ))}
+                 {filteredPublications.length === 0 && (
+                    <p className="text-gray-500 italic mt-8">No publications found for the selected area.</p>
+                )}
+            </div>
+        </div>
+    );
+};
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
+const AIAssistant = () => {
+    const [query, setQuery] = useState('');
+    const [chatHistory, setChatHistory] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
-class TokenRequest(BaseModel):
-    email: EmailStr
-    password: str
+    // --- CONFIGURATION ---
+    // REPLACE THIS WITH THE LIVE URL YOU GET FROM RENDER (e.g., https://silvia-advocate-api.onrender.com)
+    const BASE_API_URL = "https://your-live-fastapi-url.onrender.com"; 
+    // ---------------------
 
-class QueryRequest(BaseModel):
-    query: str
+    // Makes the API call to the Python Backend /qa-chatbot endpoint
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!query.trim()) return;
 
-class DocumentMetadata(BaseModel):
-    id: str
-    filename: str
-    uploaded_by: EmailStr
-    upload_date: datetime
-    status: str
-    llm_summary: Optional[str] = None
-    cloud_path: str
+        const userMessage = { sender: 'user', text: query, id: Date.now() };
+        setChatHistory(prev => [...prev, userMessage]);
+        setQuery('');
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(`${BASE_API_URL}/qa-chatbot`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query: query }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`API returned status ${response.status}`);
+            }
+
+            const data = await response.json();
+            const aiMessage = { sender: 'ai', text: data.answer || "Error: Could not retrieve valid AI response.", id: Date.now() + 1 };
+            setChatHistory(prev => [...prev, aiMessage]);
+
+        } catch (error) {
+            console.error("AI API Call Failed:", error);
+            const errorMessage = { sender: 'ai', text: "Error connecting to AI service. Check API URL in App.jsx.", id: Date.now() + 1 };
+            setChatHistory(prev => [...prev, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="container mx-auto py-16 px-4 max-w-3xl">
+            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2`}>AI Knowledge Assistant</h1>
+            <p className={`text-lg ${TEXT_COLOR_SECONDARY} mb-8`}>Ask questions about our practice areas, publications, or general legal FAQs. **This simulates the RAG chatbot powered by the FastAPI LLM endpoint.**</p>
+
+            <Card className="h-[60vh] flex flex-col">
+                {/* Chat History */}
+                <div className="flex-grow overflow-y-auto space-y-4 p-4 mb-4 border-b border-gray-200">
+                    {chatHistory.length === 0 && (
+                        <p className="text-center text-gray-400 mt-16 text-sm flex items-center justify-center">
+                            <Search size={16} className="mr-2" /> Type a query to search the firm's indexed knowledge base.
+                        </p>
+                    )}
+                    {chatHistory.map(msg => (
+                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                            <div className={`max-w-xs md:max-w-md p-3 rounded-xl shadow-sm ${msg.sender === 'user' ? `${BUTTON_BG_COLOR} text-white rounded-br-none` : 'bg-gray-100 text-gray-800 rounded-tl-none'}`}>
+                                {msg.text}
+                            </div>
+                        </div>
+                    ))}
+                    {isLoading && (
+                        <div className="flex justify-start">
+                             <div className="max-w-md p-3 rounded-xl bg-gray-100 text-gray-600 rounded-tl-none animate-pulse">
+                                AI Assistant is processing...
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                {/* Input Form */}
+                <form onSubmit={handleSubmit} className="flex space-x-3 p-4">
+                    <input
+                        type="text"
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                        placeholder="Ask a question..."
+                        disabled={isLoading}
+                        className="flex-grow border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A] focus:border-transparent transition"
+                    />
+                    <Button type="submit" primary={true} disabled={isLoading} icon={ChevronRight}>
+                        Ask
+                    </Button>
+                </form>
+            </Card>
+        </div>
+    );
+};
+
+const SecurePortal = ({ setIsLoggedIn, isLoggedIn }) => {
+    const [email, setEmail] = useState('client@test.com');
+    const [password, setPassword] = useState('password');
+    const [uploadStep, setUploadStep] = useState(1);
+    const [file, setFile] = useState(null);
+    const [uploadStatus, setUploadStatus] = useState(null);
+
+    // --- CONFIGURATION ---
+    // REPLACE THIS WITH THE LIVE URL YOU GET FROM RENDER (e.g., https://silvia-advocate-api.onrender.com)
+    const BASE_API_URL = "https://your-live-fastapi-url.onrender.com"; 
+    // ---------------------
+
+    const handleLogin = async (e) => {
+        e.preventDefault();
+        setUploadStatus("Logging in...");
+        try {
+            // Step 1: Call FastAPI login endpoint
+            const response = await fetch(`${BASE_API_URL}/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            if (!response.ok) {
+                setUploadStatus("Login failed. Check credentials.");
+                return;
+            }
+
+            const data = await response.json();
+            // Step 2: Store JWT token (simulated: console log)
+            console.log("Login Successful. Token:", data.access_token);
+            setUploadStatus("Success! Entering portal...");
+            setIsLoggedIn(true);
+
+        } catch (error) {
+            setUploadStatus("Error connecting to API. Check console/URL.");
+            console.error("Login failed due to network/CORS error:", error);
+        }
+    };
 
 
-# --- API ENDPOINTS (ROUTERS) ---
+    const handleFileUpload = async (e) => {
+        e.preventDefault();
+        if (!file) return;
+        
+        setUploadStatus('Uploading...');
+        
+        // Simulate API call to FastAPI /portal/documents/upload
+        const formData = new FormData();
+        formData.append("file", file);
+        
+        try {
+            // NOTE: We are skipping the JWT bearer token for this FE simulation for simplicity.
+            const response = await fetch(`${BASE_API_URL}/portal/documents/upload`, {
+                method: 'POST',
+                // JWT token would be added to 'Authorization' header in a real app
+                // headers: { 'Authorization': `Bearer ${token}` },
+                body: formData,
+            });
+            
+            if (!response.ok) {
+                setUploadStatus(`Upload failed: ${response.status}`);
+                throw new Error("API Upload Failed");
+            }
+            
+            // Data includes LLM summary (Requirement 4)
+            const data = await response.json();
+            console.log("Document Metadata Received:", data);
+            
+            setUploadStatus('Complete');
+            setUploadStep(3); 
+            
+        } catch (error) {
+            setUploadStatus('Upload failed. Check API status/CORS.');
+            console.error("Upload Error:", error);
+        }
+    };
 
-auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
+    if (!isLoggedIn) {
+        return (
+            <div className="container mx-auto py-20 px-4 max-w-lg">
+                <Card>
+                    <h1 className={`text-3xl font-bold ${TEXT_COLOR_PRIMARY} mb-6 text-center`}>Secure Client Login</h1>
+                    <form onSubmit={handleLogin} className="space-y-4">
+                        <input
+                            type="email"
+                            placeholder="Email (client@test.com)"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A]"
+                            required
+                        />
+                        {/* BUG FIX: Correctly setting password state */}
+                        <input
+                            type="password"
+                            placeholder="Password (password)"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)} 
+                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A]"
+                            required
+                        />
+                        <Button type="submit" className="w-full" icon={Lock}>
+                            Access Portal
+                        </Button>
+                        {uploadStatus && <p className="mt-3 text-center text-sm text-red-600">{uploadStatus}</p>}
+                    </form>
+                    <p className={`mt-4 text-center text-sm ${TEXT_COLOR_SECONDARY}`}>Demo Credentials: client@test.com / password</p>
+                </Card>
+            </div>
+        );
+    }
 
-@auth_router.post("/login", response_model=Token)
-async def login_for_access_token(form_data: TokenRequest = Body(...)):
-    """
-    Endpoint for Secure Client Login (FastAPI JWT Authentication).
-    """
-    user = await db_get_user(form_data.email)
-    
-    if not user or not verify_password(form_data.password, user.hashed_password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    // --- Secured Portal Dashboard (Requirement 1 & 4) ---
+    return (
+        <div className="container mx-auto py-16 px-4">
+            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2 flex items-center`}>
+                <Lock size={30} className="mr-2 text-red-600" /> Client Document Portal
+            </h1>
+            <p className={`text-lg ${TEXT_COLOR_SECONDARY} mb-8`}>Welcome back, client@test.com. This is a private, authenticated workspace.</p>
+            
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                {/* 1. Document Upload Utility */}
+                <Card className={`lg:col-span-1 border-4 border-dashed border-[#A98C6A] p-6 h-fit`}>
+                    <h2 className={`text-2xl font-bold mb-4 flex items-center ${TEXT_COLOR_PRIMARY}`}><Upload size={24} className="mr-2" /> Secure Document Upload</h2>
+                    
+                    {uploadStep === 1 && (
+                        <div className="space-y-4">
+                            <input 
+                                type="file" 
+                                onChange={(e) => setFile(e.target.files[0])}
+                                className="w-full p-2 border border-gray-300 rounded-lg"
+                            />
+                            <Button 
+                                onClick={() => file && setUploadStep(2)} 
+                                primary={true}
+                                disabled={!file}
+                                className="w-full"
+                                icon={ChevronRight}
+                            >
+                                Next: Review
+                            </Button>
+                            {file && <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>File selected: {file.name}</p>}
+                        </div>
+                    )}
+                    
+                    {uploadStep === 2 && (
+                        <div className="space-y-4">
+                            <p className="font-semibold">Confirm Upload:</p>
+                            <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>File: {file?.name}</p>
+                            <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>Size: {(file?.size / 1024).toFixed(2)} KB</p>
+                            <Button 
+                                onClick={handleFileUpload} 
+                                disabled={uploadStatus === 'Uploading...' || uploadStatus === 'Analyzing...'} 
+                                className="w-full"
+                                icon={uploadStatus === 'Complete' ? CheckCircle : Upload}
+                            >
+                                {uploadStatus === 'Complete' ? 'Upload Done!' : (uploadStatus || 'Start Upload & Analysis')}
+                            </Button>
+                             {uploadStatus && <p className="text-center text-sm mt-3 text-red-600 font-medium">Simulated: FastAPI uploads to S3 and triggers LLM summary job.</p>}
+                        </div>
+                    )}
 
-    access_token = create_access_token(data={"sub": user.email})
-    return {"access_token": access_token, "token_type": "bearer"}
+                    {uploadStep === 3 && (
+                        <div className="text-center space-y-4">
+                            <CheckCircle size={48} className="text-green-500 mx-auto" />
+                            <h3 className={`text-xl font-bold ${TEXT_COLOR_PRIMARY}`}>Upload Successful!</h3>
+                            <p className={`text-gray-600`}>The document is now awaiting review. The AI summary is available in the list.</p>
+                            <Button onClick={() => { setUploadStep(1); setFile(null); setUploadStatus(null); }}>
+                                Upload Another Document
+                            </Button>
+                        </div>
+                    )}
+                </Card>
 
-# --- PUBLIC/AI ROUTER ---
+                {/* 2. Document List (LLM Summary Display) */}
+                <div className="lg:col-span-2 space-y-6">
+                    <h2 className={`text-2xl font-bold ${TEXT_COLOR_PRIMARY} mb-4 flex items-center`}><FileText size={24} className="mr-2" /> Your Documents</h2>
+                    {DUMMY_DOCUMENTS.map(doc => (
+                        <Card key={doc.id} className="p-5">
+                            <div className="flex justify-between items-center">
+                                <h3 className={`text-lg font-bold ${PRIMARY_ACCENT_COLOR}`}>{doc.name}</h3>
+                                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${doc.status === 'Reviewed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                    {doc.status}
+                                </span>
+                            </div>
+                            <p className={`text-xs ${TEXT_COLOR_SECONDARY} mt-1`}>Uploaded: {doc.date}</p>
+                            
+                            <div className="mt-4 p-3 bg-gray-50 border-l-4 border-gray-300 rounded-r-lg">
+                                <p className={`font-semibold text-sm ${TEXT_COLOR_PRIMARY} mb-1`}>AI Document Summary (LLM Output):</p>
+                                <p className={`text-sm ${TEXT_COLOR_SECONDARY} italic`}>{doc.summary}</p>
+                            </div>
+                        </Card>
+                    ))}
+                </div>
+            </div>
+        </div>
+    );
+};
 
-public_router = APIRouter(tags=["Public & AI Services"])
 
-@public_router.get("/")
-async def root():
-    return {"message": "Advocate Portfolio API Gateway is running."}
+// --- Main Application Component ---
+const App = () => {
+  const [currentPage, setCurrentPage] = useState('Home');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-@public_router.post("/qa-chatbot")
-async def ai_qa_chatbot(q: QueryRequest):
-    """
-    AI Q&A/Chatbot Endpoint (RAG Simulation).
-    Simulates calling a LangChain/LlamaIndex pipeline to answer questions
-    based ONLY on indexed internal documents (e.g., publications/FAQs).
-    """
-    # 1. Simulate RAG Search (connects to Vector DB and LLM)
-    
-    llm_response_map = {
-        "trade compliance": "The firm's expertise includes navigating post-Brexit trade compliance. A publication from Oct 2025 outlines the new documentation and tariff requirements for UK exports.",
-        "dispute resolution": "Based on case studies, complex cross-border disputes are often resolved via mediation under SIAC rules, a method detailed in the firm's dispute resolution strategy.",
-        "contract drafting": "Master Distributor Agreements require careful review of exclusive distribution clauses and automatic renewal terms, as highlighted in a recent document analysis on the EU market.",
-    }
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'Home':
+        return <HomePage setCurrentPage={setCurrentPage} />;
+      case 'PracticeAreas':
+        return <PublicationsPage />; 
+      case 'Publications':
+        return <PublicationsPage />;
+      case 'Contact':
+        return <AIAssistant />; 
+      case 'Portal':
+        return <SecurePortal isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
+      default:
+        return <HomePage setCurrentPage={setCurrentPage} />;
+    }
+  };
 
-    # Simple keyword match simulation for demonstration
-    query_lower = q.query.lower()
-    
-    if "trade" in query_lower or "export" in query_lower:
-        answer = llm_response_map["trade compliance"]
-    elif "dispute" in query_lower or "mediation" in query_lower:
-        answer = llm_response_map["dispute resolution"]
-    elif "contract" in query_lower or "renewal" in query_lower:
-        answer = llm_response_map["contract drafting"]
-    else:
-        answer = "I apologize, but I cannot provide a definitive answer based on the indexed knowledge base. Please book a consultation for specific legal advice."
+  const NavItem = ({ name, page }) => (
+    <button
+      onClick={() => {
+        setCurrentPage(page);
+        setIsMobileMenuOpen(false); 
+      }}
+      className={`px-4 py-2 font-medium transition duration-200 rounded-lg 
+        ${currentPage === page 
+          ? `${PRIMARY_ACCENT_COLOR} border-b-2 border-[#A98C6A] ${TEXT_COLOR_PRIMARY}` 
+          : `${TEXT_COLOR_SECONDARY} hover:${TEXT_COLOR_PRIMARY} hover:bg-gray-100`
+        }`}
+    >
+      {name}
+    </button>
+  );
 
-    return {"answer": answer}
+  return (
+    <div className={`min-h-screen font-sans ${BG_COLOR}`}>
+      {/* Header and Navigation */}
+      <header className="bg-white shadow-lg sticky top-0 z-20">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          {/* Logo/Name */}
+          <div className={`text-2xl font-extrabold ${TEXT_COLOR_PRIMARY}`}>
+            <span className={PRIMARY_ACCENT_COLOR}>Silvia</span> Munjal
+          </div>
 
-# --- SECURE PORTAL ROUTER ---
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex space-x-2">
+            <NavItem name="Home" page="Home" />
+            <NavItem name="Practice Areas" page="PracticeAreas" />
+            <NavItem name="Publications" page="Publications" />
+            <NavItem name="AI Assistant (Q&A)" page="Contact" />
+            <NavItem name="Secure Portal" page="Portal" />
+          </nav>
+          
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <Button primary={false} icon={isMobileMenuOpen ? X : Menu} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
+              Menu
+            </Button>
+          </div>
+        </div>
 
-portal_router = APIRouter(prefix="/portal", tags=["Secure Client Portal"])
+        {/* Mobile Menu Overlay */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 border-t border-gray-200">
+            <nav className="flex flex-col items-center space-y-3">
+              <NavItem name="Home" page="Home" />
+              <NavItem name="Practice Areas" page="PracticeAreas" />
+              <NavItem name="Publications" page="Publications" />
+              <NavItem name="AI Assistant (Q&A)" page="Contact" />
+              <NavItem name="Secure Portal" page="Portal" />
+            </nav>
+          </div>
+        )}
+      </header>
 
-@portal_router.post("/documents/upload", response_model=DocumentMetadata)
-async def upload_document(
-    file: UploadFile = File(...),
-    current_user: ClientUserDB = Depends(get_current_user)
-):
-    """
-    Uploads a document to secure storage and initiates LLM summary.
-    (Requires JWT Auth)
-    """
-    # 1. Validation and File Storage (S3/GCS simulation)
-    # In a real app, file content is streamed to secure cloud storage.
-    file_id = str(uuid.uuid4())
-    time.sleep(1) # Simulate upload time
+      <main>
+        {renderPage()}
+      </main>
 
-    # 2. LLM Summary Initiation (Asynchronous Simulation)
-    # This task would run in the background (e.g., Celery/Cloud Task)
-    llm_summary = f"LLM Summary: Preliminary analysis of {file.filename} suggests high complexity. Key terms: Jurisdiction, Arbitration, and non-compete. Review needed."
-    time.sleep(3) # Simulate LLM processing delay
+      {/* Footer */}
+      <footer className="bg-gray-800 text-white mt-12 py-10">
+          <div className="container mx-auto px-4 text-center">
+              <p className="text-lg font-semibold mb-2">Silvia Munjal, Advocate</p>
+              <p className="text-sm text-gray-400">Built with React, Tailwind CSS, and a FastAPI/Python AI Backend.</p>
+              <p className="text-xs text-gray-500 mt-2">Copyright © 2025. All Rights Reserved.</p>
+          </div>
+      </footer>
+    </div>
+  );
+};
 
-    # 3. Save metadata to PostgreSQL DB
-    doc_metadata = DocumentMetadata(
-        id=file_id,
-        filename=file.filename,
-        uploaded_by=current_user.email,
-        upload_date=datetime.now(timezone.utc),
-        status="New",
-        llm_summary=llm_summary,
-        cloud_path=f"s3://secure-bucket/{file_id}/{file.filename}"
-    )
-
-    return doc_metadata
-
-@portal_router.get("/documents", response_model=List[DocumentMetadata])
-async def list_documents(current_user: ClientUserDB = Depends(get_current_user)):
-    """
-    Lists documents relevant to the authenticated client.
-    (Requires JWT Auth)
-    """
-    # Simulates fetching client-specific documents from DB
-    return [
-        DocumentMetadata(
-            id="doc1", filename="Master Distributor Agreement (EU).pdf", uploaded_by=current_user.email,
-            upload_date=datetime.now(timezone.utc) - timedelta(days=5), status="Reviewed",
-            llm_summary="LLM Summary: The document outlines exclusive distribution clauses for the EU market. Key finding: No automatic renewal clause is present.",
-            cloud_path="s3://path/doc1.pdf"
-        ),
-        DocumentMetadata(
-            id="doc2", filename="Draft Arbitration Notice - Project Beta.docx", uploaded_by=current_user.email,
-            upload_date=datetime.now(timezone.utc) - timedelta(days=2), status="New",
-            llm_summary="LLM Summary: A preliminary review suggests that the case is best suited for mediation under SIAC rules. Further document gathering on correspondence history is needed.",
-            cloud_path="s3://path/doc2.docx"
-        )
-    ]
-
-# --- INCLUDE ROUTERS ---
-
-app.include_router(public_router)
-app.include_router(auth_router)
-app.include_router(portal_router)
-
-# --- ENTRY POINT (for local development via uvicorn main:app) ---
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+export default App;
