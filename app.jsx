@@ -116,38 +116,8 @@ const HomePage = ({ setCurrentPage }) => (
                 <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Overseas Clients</p>
             </div>
         </div>
-    </div>
-
-    {/* Services Preview Section - Classy Layout */}
-    <div className="container mx-auto px-4 py-16">
-        <h2 className={`text-3xl font-bold ${TEXT_COLOR_PRIMARY} mb-10 text-center`}>Specialized Services</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="text-center">
-                <Globe size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
-                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Export & Trade Contracts</h3>
-                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Legally sound agreements for global trade and distribution channels.</p>
-            </Card>
-            <Card className="text-center">
-                <FileCheck size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
-                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Compliance & Regulatory</h3>
-                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Advisory for cross-border regulations, customs, and global legal frameworks.</p>
-            </Card>
-            <Card className="text-center">
-                <DollarSign size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
-                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Risk & Dispute Resolution</h3>
-                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Protecting businesses from costly disputes through proactive risk management and mediation.</p>
-            </Card>
-            <Card className="text-center">
-                <Briefcase size={32} className={`${PRIMARY_ACCENT_COLOR} mx-auto`} />
-                <h3 className={`text-xl font-bold mt-4 ${TEXT_COLOR_PRIMARY}`}>Business Negotiations</h3>
-                <p className={`mt-2 text-sm ${TEXT_COLOR_SECONDARY}`}>Securing favorable, long-term terms for international partnerships and ventures.</p>
-            </Card>
-        </div>
-        <div className="mt-12 text-center">
-            <Button primary={false} onClick={() => setCurrentPage('PracticeAreas')} icon={ChevronRight}>Learn More About Services</Button>
-        </div>
       </div>
-  </div>
+    </div>
 );
 
 const PublicationsPage = () => {
