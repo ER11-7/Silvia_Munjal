@@ -1,9 +1,9 @@
 fastapi
-uvicorn\[standard\]
+uvicorn
 gunicorn
 pydantic
 starlette
 email-validator
 python-multipart
-python-jose\[cryptography\]
-pwdlib\[argon2\]
+python-jose
+pwdlib
