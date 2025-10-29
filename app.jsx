@@ -1,567 +1,501 @@
 import React, { useState, useEffect } from 'react';
-import { Aperture, BookOpen, Key, Users, MessageSquare, Briefcase, ChevronRight, Upload, FileText, Lock, CheckCircle, XCircle, Menu, X, Search, Globe, FileCheck, DollarSign } from 'lucide-react';
+import { LogIn, LogOut, FileText, Upload, ChevronDown, List } from 'lucide-react';
 
-// --- DUMMY DATA SIMULATION (Replaces Headless CMS & FastAPI) ---
-const DUMMY_PUBLICATIONS = [
-  { id: 1, title: "Navigating Post-Brexit Trade Compliance for Indian Exporters", date: "Oct 2025", area: "Trade Contracts", summary: "An analysis of recent tariff changes and new documentation requirements for UK trade partners.", link: "#" },
-  { id: 2, title: "Mitigating Risk in Cross-Border E-Commerce Agreements", date: "Sep 2025", area: "Dispute Resolution", summary: "Strategies for protecting intellectual property and ensuring payment security in digital global sales.", link: "#" },
-  { id: 3, title: "The Legal Guide to Global OEM & Export Manufacturing Contracts", date: "Aug 2025", area: "Trade Contracts", summary: "Essential guide for protecting new technology and trademarks in the pre-seed funding stage.", link: "#" },
-  { id: 4, title: "Understanding Bilateral Investment Treaties (BITs) in Asia", date: "Jul 2025", area: "Compliance & Advisory", summary: "A review of how BITs impact foreign investment protection and dispute settlement mechanisms.", link: "#" },
-];
-
-const DUMMY_DOCUMENTS = [
-    { id: 1, name: "Master Distributor Agreement (EU).pdf", date: "2025-10-25", status: "Reviewed", summary: "LLM Summary: The document outlines exclusive distribution clauses for the EU market. Key finding: No automatic renewal clause is present." },
-    { id: 2, name: "Draft Arbitration Notice - Project Beta.docx", date: "2025-10-20", status: "New", summary: "LLM Summary: A preliminary review suggests that the case is best suited for mediation under SIAC rules. Further document gathering on correspondence history is needed." },
-];
-
-const PRACTICE_AREAS = [
-    "Export & Trade Contracts", "Compliance & Regulatory", "Dispute Resolution", "International Negotiations"
-];
-
-// --- NEW COLOR CODES FOR CLASSY/GOLD AESTHETIC ---
-const PRIMARY_ACCENT_COLOR = 'text-[#A98C6A]'; // Rich Tan/Gold
-const BUTTON_BG_COLOR = 'bg-[#A98C6A]';
-const HOVER_ACCENT_COLOR = 'hover:bg-[#8C755D]'; // Darker gold for buttons
-const LIGHT_HOVER_ACCENT_COLOR = 'hover:bg-amber-50'; // Light gold hover for links
-const BORDER_COLOR = 'border-[#A98C6A]';
-
-const BG_COLOR = 'bg-gray-50'; // Light background for professionalism
-const TEXT_COLOR_PRIMARY = 'text-gray-900';
-const TEXT_COLOR_SECONDARY = 'text-gray-600';
-
-// --- Utility Components ---
-
-const Button = ({ children, onClick, primary = true, icon: Icon, className = '', type = 'button', disabled = false }) => (
-  <button
-    type={type}
-    onClick={onClick}
-    disabled={disabled}
-    className={`
-      flex items-center justify-center space-x-2 px-6 py-3 rounded-lg transition duration-300 shadow-md font-semibold text-sm
-      ${primary 
-        ? `${BUTTON_BG_COLOR} text-white ${HOVER_ACCENT_COLOR}` 
-        : `bg-white ${PRIMARY_ACCENT_COLOR} border ${BORDER_COLOR} ${LIGHT_HOVER_ACCENT_COLOR}`
-      }
-      ${className}
-      ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
-    `}
-  >
-    {Icon && <Icon size={20} />}
-    <span>{children}</span>
-  </button>
-);
-
-const Card = ({ children, className = '' }) => (
-    <div className={`p-6 bg-white rounded-lg shadow-lg border border-gray-200 ${className}`}>
-        {children}
-    </div>
-);
-
-// --- Page Components ---
-
-const HomePage = ({ setCurrentPage }) => (
-  <div className="space-y-16">
-    {/* Hero Section - Matching the Image Content */}
-    <div className="container mx-auto py-24 px-4 flex flex-col md:flex-row items-center justify-between gap-12">
-        
-        {/* Left Side: Text and CTA */}
-        <div className="md:w-1/2 text-center md:text-left">
-            <p className={`text-3xl font-extrabold ${TEXT_COLOR_PRIMARY} mb-2`}>Silvia Munjal</p>
-            <h1 className={`text-4xl md:text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR} leading-tight mb-4`}>
-                International Business & Trade Lawyer
-            </h1>
-            <p className={`text-xl font-serif italic ${PRIMARY_ACCENT_COLOR} mb-6`}>
-                "Securing Global Business, One Contract at a Time."
-            </p>
-            
-            <p className={`mt-6 text-lg ${TEXT_COLOR_SECONDARY} max-w-xl md:max-w-none`}>
-                Silvia Munjal is a trusted **International Business Lawyer** specializing in export & trade contracts, compliance, and cross-border dispute resolution. With over **500 contracts executed across 7+ countries**, she helps Indian businesses expand globally with confidence.
-            </p>
-
-            {/* CTA Button */}
-            <div className="mt-10">
-                <Button onClick={() => setCurrentPage('Contact')} icon={MessageSquare} className="py-4 px-8 text-base">
-                    Book a Consultation Call
-                </Button>
-            </div>
-        </div>
-
-        {/* Right Side: Image Placeholder */}
-        <div className="md:w-1/2 flex justify-center md:justify-end">
-            <div className="w-80 h-80 rounded-full overflow-hidden shadow-2xl border-4 border-[#A98C6A]">
-                {/* The live site would use a proper URL for Silvia's professional photo */}
-                <img 
-                    src="https://placehold.co/800x800/A98C6A/FFFFFF?text=Silvia+Munjal+Advocate" 
-                    alt="Silvia Munjal, International Business Lawyer" 
-                    className="w-full h-full object-cover"
-                    onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/800x800/A98C6A/FFFFFF?text=Silvia+Munjal+Advocate" }}
-                />
-            </div>
-        </div>
-    </div>
-
-    {/* Stats Section - Matching the Document Content */}
-    <div className="bg-white py-12 border-t border-gray-200">
-        <div className="container mx-auto px-4 flex justify-around text-center">
-            <div className="w-1/3">
-                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>500+</p>
-                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Contracts Drafted & Negotiated</p>
-            </div>
-            <div className="w-1/3">
-                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>7+</p>
-                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Countries Served</p>
-            </div>
-            <div className="w-1/3">
-                <p className={`text-5xl font-extrabold ${PRIMARY_ACCENT_COLOR}`}>30+</p>
-                <p className={`text-base font-semibold ${TEXT_COLOR_SECONDARY} uppercase tracking-wider mt-2`}>Overseas Clients</p>
-            </div>
-        </div>
-      </div>
-    </div>
-);
-
-const PublicationsPage = () => {
-    const [selectedArea, setSelectedArea] = useState('All');
-    
-    // Simulate fetching content (would hit /api/publications in reality)
-    const filteredPublications = DUMMY_PUBLICATIONS.filter(p => selectedArea === 'All' || p.area === selectedArea);
-
-    return (
-        <div className="container mx-auto py-16 px-4">
-            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2`}>Publications & Thought Leadership</h1>
-            <p className={`text-xl ${TEXT_COLOR_SECONDARY} mb-8`}>Access professional analysis and articles on recent legal developments.</p>
-            
-            {/* Filter Section (Requirement 2: Filterable) */}
-            <div className="mb-8 flex flex-wrap gap-3 items-center">
-                <span className={`font-medium ${TEXT_COLOR_PRIMARY} self-center mr-2 text-sm uppercase`}>Filter:</span>
-                <button
-                    onClick={() => setSelectedArea('All')}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm 
-                        ${selectedArea === 'All' ? `${BUTTON_BG_COLOR} text-white` : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'}`}
-                >
-                    All Areas
-                </button>
-                {PRACTICE_AREAS.map(area => (
-                    <button
-                        key={area}
-                        onClick={() => setSelectedArea(area)}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm 
-                            ${selectedArea === area ? `${BUTTON_BG_COLOR} text-white` : 'bg-white border border-gray-300 text-gray-700 hover:bg-gray-100'}`}
-                    >
-                        {area}
-                    </button>
-                ))}
-            </div>
-
-            {/* List of Publications */}
-            <div className="space-y-6">
-                {filteredPublications.map(pub => (
-                    <Card key={pub.id} className="hover:ring-1 hover:ring-[#A98C6A] transition duration-300">
-                        <div className="flex justify-between items-start">
-                            <h2 className={`text-xl font-bold ${PRIMARY_ACCENT_COLOR}`}>{pub.title}</h2>
-                            <span className="text-xs font-semibold text-gray-500 bg-gray-100 px-3 py-1 rounded-full">{pub.date}</span>
-                        </div>
-                        <p className={`text-sm ${TEXT_COLOR_SECONDARY} mt-1`}>{pub.area}</p>
-                        <p className={`mt-3 ${TEXT_COLOR_SECONDARY}`}>{pub.summary}</p>
-                        <a href={pub.link} className={`mt-3 inline-flex items-center text-sm font-semibold ${PRIMARY_ACCENT_COLOR} hover:${TEXT_COLOR_PRIMARY} transition`}>
-                            Read Full Article <ChevronRight size={16} className="ml-1" />
-                        </a>
-                    </Card>
-                ))}
-                 {filteredPublications.length === 0 && (
-                    <p className="text-gray-500 italic mt-8">No publications found for the selected area.</p>
-                )}
-            </div>
-        </div>
-    );
+// API Configuration
+// NOTE: Use your final Vercel domain here!
+const API_BASE_URL = 'https://silvia-munjal-three.vercel.app';
+const API_ROUTES = {
+  LOGIN: `${API_BASE_URL}/auth/login`,
+  DOCUMENTS_LIST: `${API_BASE_URL}/portal/documents`,
+  DOCUMENT_UPLOAD: `${API_BASE_URL}/portal/documents/upload`,
+  QA_CHATBOT: `${API_BASE_URL}/qa-chatbot`,
 };
 
-const AIAssistant = () => {
-    const [query, setQuery] = useState('');
-    const [chatHistory, setChatHistory] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
+// --- Component Schemas ---
 
-    // --- CONFIGURATION ---
-    // FINAL LIVE URL FROM RENDER DEPLOYMENT
-    const BASE_API_URL = "https://silvia-munjal.onrender.com"; 
-    // ---------------------
+const DocumentCard = ({ doc }) => {
+  const uploadDate = new Date(doc.upload_date).toLocaleDateString();
 
-    // Makes the API call to the Python Backend /qa-chatbot endpoint
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!query.trim()) return;
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Reviewed':
+        return 'bg-green-100 text-green-800';
+      case 'New':
+        return 'bg-blue-100 text-blue-800';
+      case 'Processing':
+        return 'bg-yellow-100 text-yellow-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
 
-        const userMessage = { sender: 'user', text: query, id: Date.now() };
-        setChatHistory(prev => [...prev, userMessage]);
-        setQuery('');
-        setIsLoading(true);
-
-        try {
-            const response = await fetch(`${BASE_API_URL}/qa-chatbot`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ query: query }),
-            });
-
-            if (!response.ok) {
-                throw new Error(`API returned status ${response.status}`);
-            }
-
-            const data = await response.json();
-            const aiMessage = { sender: 'ai', text: data.answer || "Error: Could not retrieve valid AI response.", id: Date.now() + 1 };
-            setChatHistory(prev => [...prev, aiMessage]);
-
-        } catch (error) {
-            console.error("AI API Call Failed:", error);
-            const errorMessage = { sender: 'ai', text: "Error connecting to AI service. Check API status and CORS settings.", id: Date.now() + 1 };
-            setChatHistory(prev => [...prev, errorMessage]);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    return (
-        <div className="container mx-auto py-16 px-4 max-w-3xl">
-            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2`}>AI Knowledge Assistant</h1>
-            <p className={`text-lg ${TEXT_COLOR_SECONDARY} mb-8`}>Ask questions about our practice areas, publications, or general legal FAQs. **This simulates the RAG chatbot powered by the FastAPI LLM endpoint.**</p>
-
-            <Card className="h-[60vh] flex flex-col">
-                {/* Chat History */}
-                <div className="flex-grow overflow-y-auto space-y-4 p-4 mb-4 border-b border-gray-200">
-                    {chatHistory.length === 0 && (
-                        <p className="text-center text-gray-400 mt-16 text-sm flex items-center justify-center">
-                            <Search size={16} className="mr-2" /> Type a query to search the firm's indexed knowledge base.
-                        </p>
-                    )}
-                    {chatHistory.map(msg => (
-                        <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                            <div className={`max-w-xs md:max-w-md p-3 rounded-xl shadow-sm ${msg.sender === 'user' ? `${BUTTON_BG_COLOR} text-white rounded-br-none` : 'bg-gray-100 text-gray-800 rounded-tl-none'}`}>
-                                {msg.text}
-                            </div>
-                        </div>
-                    ))}
-                    {isLoading && (
-                        <div className="flex justify-start">
-                             <div className="max-w-md p-3 rounded-xl bg-gray-100 text-gray-600 rounded-tl-none animate-pulse">
-                                AI Assistant is processing...
-                            </div>
-                        </div>
-                    )}
-                </div>
-
-                {/* Input Form */}
-                <form onSubmit={handleSubmit} className="flex space-x-3 p-4">
-                    <input
-                        type="text"
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        placeholder="Ask a question..."
-                        disabled={isLoading}
-                        className="flex-grow border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A] focus:border-transparent transition"
-                    />
-                    <Button type="submit" primary={true} disabled={isLoading} icon={ChevronRight}>
-                        Ask
-                    </Button>
-                </form>
-            </Card>
-        </div>
-    );
-};
-
-const SecurePortal = ({ setIsLoggedIn, isLoggedIn }) => {
-    const [email, setEmail] = useState('client@test.com');
-    const [password, setPassword] = useState('password');
-    const [uploadStep, setUploadStep] = useState(1);
-    const [file, setFile] = useState(null);
-    const [uploadStatus, setUploadStatus] = useState(null);
-
-    // --- CONFIGURATION ---
-    // The final live URL from Render deployment
-    const BASE_API_URL = "/api/index";; 
-    // ---------------------
-
-    const handleLogin = async (e) => {
-        e.preventDefault();
-        setUploadStatus("Logging in...");
-        try {
-            // Step 1: Call FastAPI login endpoint
-            const response = await fetch(`${BASE_API_URL}/auth/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-
-            if (!response.ok) {
-                setUploadStatus("Login failed. Check credentials.");
-                return;
-            }
-
-            const data = await response.json();
-            // Step 2: Store JWT token (simulated: console log)
-            console.log("Login Successful. Token:", data.access_token);
-            setUploadStatus("Success! Entering portal...");
-            setIsLoggedIn(true);
-
-        } catch (error) {
-            setUploadStatus("Error connecting to API. Check console/URL.");
-            console.error("Login failed due to network/CORS error:", error);
-        }
-    };
-
-
-    const handleFileUpload = async (e) => {
-        e.preventDefault();
-        if (!file) return;
-        
-        setUploadStatus('Uploading...');
-        
-        // Simulate API call to FastAPI /portal/documents/upload
-        const formData = new FormData();
-        formData.append("file", file);
-        
-        try {
-            // NOTE: We are skipping the JWT bearer token for this FE simulation for simplicity.
-            const response = await fetch(`${BASE_API_URL}/portal/documents/upload`, {
-                method: 'POST',
-                // JWT token would be added to 'Authorization' header in a real app
-                // headers: { 'Authorization': `Bearer ${token}` },
-                body: formData,
-            });
-            
-            if (!response.ok) {
-                setUploadStatus(`Upload failed: ${response.status}`);
-                throw new Error("API Upload Failed");
-            }
-            
-            // Data includes LLM summary (Requirement 4)
-            const data = await response.json();
-            console.log("Document Metadata Received:", data);
-            
-            setUploadStatus('Complete');
-            setUploadStep(3); 
-            
-        } catch (error) {
-            setUploadStatus('Upload failed. Check API status/CORS.');
-            console.error("Upload Error:", error);
-        }
-    };
-
-    if (!isLoggedIn) {
-        return (
-            <div className="container mx-auto py-20 px-4 max-w-lg">
-                <Card>
-                    <h1 className={`text-3xl font-bold ${TEXT_COLOR_PRIMARY} mb-6 text-center`}>Secure Client Login</h1>
-                    <form onSubmit={handleLogin} className="space-y-4">
-                        <input
-                            type="email"
-                            placeholder="Email (client@test.com)"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A]"
-                            required
-                        />
-                        {/* BUG FIX: Correctly setting password state */}
-                        <input
-                            type="password"
-                            placeholder="Password (password)"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)} 
-                            className="w-full border border-gray-300 rounded-lg p-3 focus:ring-2 focus:ring-[#A98C6A]"
-                            required
-                        />
-                        <Button type="submit" className="w-full" icon={Lock}>
-                            Access Portal
-                        </Button>
-                        {uploadStatus && <p className="mt-3 text-center text-sm text-red-600">{uploadStatus}</p>}
-                    </form>
-                    <p className={`mt-4 text-center text-sm ${TEXT_COLOR_SECONDARY}`}>Demo Credentials: client@test.com / password</p>
-                </Card>
-            </div>
-        );
-    }
-
-    // --- Secured Portal Dashboard (Requirement 1 & 4) ---
-    return (
-        <div className="container mx-auto py-16 px-4">
-            <h1 className={`text-4xl font-bold ${TEXT_COLOR_PRIMARY} mb-2 flex items-center`}>
-                <Lock size={30} className="mr-2 text-red-600" /> Client Document Portal
-            </h1>
-            <p className={`text-lg ${TEXT_COLOR_SECONDARY} mb-8`}>Welcome back, client@test.com. This is a private, authenticated workspace.</p>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {/* 1. Document Upload Utility */}
-                <Card className={`lg:col-span-1 border-4 border-dashed border-[#A98C6A] p-6 h-fit`}>
-                    <h2 className={`text-2xl font-bold mb-4 flex items-center ${TEXT_COLOR_PRIMARY}`}><Upload size={24} className="mr-2" /> Secure Document Upload</h2>
-                    
-                    {uploadStep === 1 && (
-                        <div className="space-y-4">
-                            <input 
-                                type="file" 
-                                onChange={(e) => setFile(e.target.files[0])}
-                                className="w-full p-2 border border-gray-300 rounded-lg"
-                            />
-                            <Button 
-                                onClick={() => file && setUploadStep(2)} 
-                                primary={true}
-                                disabled={!file}
-                                className="w-full"
-                                icon={ChevronRight}
-                            >
-                                Next: Review
-                            </Button>
-                            {file && <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>File selected: {file.name}</p>}
-                        </div>
-                    )}
-                    
-                    {uploadStep === 2 && (
-                        <div className="space-y-4">
-                            <p className="font-semibold">Confirm Upload:</p>
-                            <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>File: {file?.name}</p>
-                            <p className={`text-sm ${TEXT_COLOR_SECONDARY}`}>Size: {(file?.size / 1024).toFixed(2)} KB</p>
-                            <Button 
-                                onClick={handleFileUpload} 
-                                disabled={uploadStatus === 'Uploading...' || uploadStatus === 'Analyzing...'} 
-                                className="w-full"
-                                icon={uploadStatus === 'Complete' ? CheckCircle : Upload}
-                            >
-                                {uploadStatus === 'Complete' ? 'Upload Done!' : (uploadStatus || 'Start Upload & Analysis')}
-                            </Button>
-                             {uploadStatus && <p className="text-center text-sm mt-3 text-red-600 font-medium">Simulated: FastAPI uploads to S3 and triggers LLM summary job.</p>}
-                        </div>
-                    )}
-
-                    {uploadStep === 3 && (
-                        <div className="text-center space-y-4">
-                            <CheckCircle size={48} className="text-green-500 mx-auto" />
-                            <h3 className={`text-xl font-bold ${TEXT_COLOR_PRIMARY}`}>Upload Successful!</h3>
-                            <p className={`text-gray-600`}>The document is now awaiting review. The AI summary is available in the list.</p>
-                            <Button onClick={() => { setUploadStep(1); setFile(null); setUploadStatus(null); }}>
-                                Upload Another Document
-                            </Button>
-                        </div>
-                    )}
-                </Card>
-
-                {/* 2. Document List (LLM Summary Display) */}
-                <div className="lg:col-span-2 space-y-6">
-                    <h2 className={`text-2xl font-bold ${TEXT_COLOR_PRIMARY} mb-4 flex items-center`}><FileText size={24} className="mr-2" /> Your Documents</h2>
-                    {DUMMY_DOCUMENTS.map(doc => (
-                        <Card key={doc.id} className="p-5">
-                            <div className="flex justify-between items-center">
-                                <h3 className={`text-lg font-bold ${PRIMARY_ACCENT_COLOR}`}>{doc.name}</h3>
-                                <span className={`text-sm font-semibold px-3 py-1 rounded-full ${doc.status === 'Reviewed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                                    {doc.status}
-                                </span>
-                            </div>
-                            <p className={`text-xs ${TEXT_COLOR_SECONDARY} mt-1`}>Uploaded: {doc.date}</p>
-                            
-                            <div className="mt-4 p-3 bg-gray-50 border-l-4 border-gray-300 rounded-r-lg">
-                                <p className={`font-semibold text-sm ${TEXT_COLOR_PRIMARY} mb-1`}>AI Document Summary (LLM Output):</p>
-                                <p className={`text-sm ${TEXT_COLOR_SECONDARY} italic`}>{doc.summary}</p>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
-            </div>
-        </div>
-    );
+  return (
+    <div className="bg-white p-4 border border-gray-200 rounded-xl shadow-md transition hover:shadow-lg hover:border-indigo-300">
+      <div className="flex justify-between items-start mb-2">
+        <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+          <FileText className="w-5 h-5 mr-2 text-indigo-600" />
+          {doc.filename}
+        </h3>
+        <span className={`px-3 py-1 text-xs font-medium rounded-full ${getStatusColor(doc.status)}`}>
+          {doc.status}
+        </span>
+      </div>
+      <p className="text-sm text-gray-500 mb-3">Uploaded: {uploadDate}</p>
+      
+      <div className="p-3 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+        <p className="text-sm font-medium text-indigo-700 mb-1">LLM Summary:</p>
+        <p className="text-sm text-gray-600 italic leading-relaxed">
+          {doc.llm_summary || "Summary generation pending..."}
+        </p>
+      </div>
+      
+      <a 
+        href={doc.cloud_path} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        className="mt-3 inline-flex items-center text-indigo-600 hover:text-indigo-800 text-sm font-medium transition duration-150"
+      >
+        View Secure File
+      </a>
+    </div>
+  );
 };
 
 
-// --- Main Application Component ---
+const DocumentUploader = ({ token, onUploadSuccess }) => {
+  const [file, setFile] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+    setMessage('');
+  };
+
+  const handleUpload = async (e) => {
+    e.preventDefault();
+    if (!file) {
+      setMessage({ text: 'Please select a file first.', type: 'error' });
+      return;
+    }
+
+    setLoading(true);
+    setMessage('');
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch(API_ROUTES.DOCUMENT_UPLOAD, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setMessage({ text: `Success! File ${data.filename} uploaded and processing started.`, type: 'success' });
+        setFile(null);
+        // Refresh document list in the parent component
+        onUploadSuccess(); 
+      } else {
+        setMessage({ text: `Upload failed: ${data.detail || response.statusText}`, type: 'error' });
+      }
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      setMessage({ text: 'Network error during upload. Check console.', type: 'error' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const messageClasses = message.type === 'error' ? 'text-red-600 bg-red-50' : 'text-green-600 bg-green-50';
+
+  return (
+    <div className="mt-8 p-6 bg-white rounded-xl shadow-lg border border-indigo-200">
+      <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+        <Upload className="w-5 h-5 mr-2 text-indigo-600" />
+        Upload New Document
+      </h2>
+      <form onSubmit={handleUpload}>
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Select Document (PDF, DOCX, TXT recommended)
+          </label>
+          <input
+            type="file"
+            onChange={handleFileChange}
+            className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+          />
+        </div>
+        
+        {message.text && (
+          <div className={`p-3 rounded-lg text-sm mb-4 border ${messageClasses}`}>
+            {message.text}
+          </div>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading || !file}
+          className="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed transition"
+        >
+          {loading ? 'Uploading & Processing...' : 'Secure Upload'}
+        </button>
+      </form>
+    </div>
+  );
+};
+
+
+const LoginScreen = ({ setToken, setUserId }) => {
+  const [email, setEmail] = useState('client@test.com');
+  const [password, setPassword] = useState('password');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch(API_ROUTES.LOGIN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        // The endpoint is defined to accept a Pydantic model (TokenRequest) via Body,
+        // so we send JSON, not form data.
+        body: JSON.stringify({ email, password }), 
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setToken(data.access_token);
+        // In a real app, you would decode the token to get the user email/ID (sub field)
+        setUserId(email); 
+        localStorage.setItem('authToken', data.access_token);
+      } else {
+        setError(data.detail || 'Login failed. Check credentials.');
+      }
+    } catch (err) {
+      setError('Network error. Check if the backend is running.');
+      console.error('Login error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-2xl border border-gray-200">
+        <h2 className="text-3xl font-extrabold text-center text-gray-900 mb-6 flex items-center justify-center">
+          <LogIn className="w-7 h-7 mr-2 text-indigo-600" />
+          Client Portal Login
+        </h2>
+        <p className="text-center text-sm text-gray-600 mb-6">
+          Use demo credentials: `client@test.com` / `password`
+        </p>
+
+        <form onSubmit={handleLogin} className="space-y-6">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Email address</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="client@example.com"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Password</label>
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="password"
+            />
+          </div>
+
+          {error && (
+            <div className="p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-300">
+              {error}
+            </div>
+          )}
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 transition"
+            >
+              {loading ? 'Authenticating...' : 'Sign In'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+
+const PortalDashboard = ({ token, userId, setToken, setUserId }) => {
+  const [documents, setDocuments] = useState([]);
+  const [loadingDocs, setLoadingDocs] = useState(true);
+  const [page, setPage] = useState('list'); // 'list', 'upload', 'qa'
+  const [qaQuery, setQaQuery] = useState('');
+  const [qaAnswer, setQaAnswer] = useState(null);
+  const [loadingQa, setLoadingQa] = useState(false);
+  const [qaError, setQaError] = useState('');
+
+  const fetchDocuments = async () => {
+    setLoadingDocs(true);
+    try {
+      const response = await fetch(API_ROUTES.DOCUMENTS_LIST, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setDocuments(data);
+      } else if (response.status === 401) {
+        // Token expired or invalid, log out
+        handleLogout(); 
+      } else {
+        console.error('Failed to fetch documents:', response.statusText);
+      }
+
+    } catch (error) {
+      console.error('Network error fetching documents:', error);
+    } finally {
+      setLoadingDocs(false);
+    }
+  };
+
+  const handleLogout = () => {
+    setToken(null);
+    setUserId(null);
+    localStorage.removeItem('authToken');
+  };
+
+  const handleQaQuery = async (e) => {
+    e.preventDefault();
+    setLoadingQa(true);
+    setQaAnswer(null);
+    setQaError('');
+
+    try {
+      const response = await fetch(API_ROUTES.QA_CHATBOT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query: qaQuery }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setQaAnswer(data.answer);
+      } else {
+        setQaError(data.detail || 'AI query failed.');
+      }
+    } catch (error) {
+      setQaError('Network error during AI query. Check console.');
+    } finally {
+      setLoadingQa(false);
+    }
+  };
+
+  useEffect(() => {
+    if (token) {
+      fetchDocuments();
+    }
+  }, [token]);
+
+  const renderContent = () => {
+    switch (page) {
+      case 'upload':
+        return (
+          <DocumentUploader 
+            token={token} 
+            onUploadSuccess={() => {
+              setPage('list');
+              fetchDocuments();
+            }} 
+          />
+        );
+      case 'qa':
+        return (
+          <div className="mt-8 p-6 bg-white rounded-xl shadow-lg border border-green-200">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+              AI Query Assistant
+            </h2>
+            <form onSubmit={handleQaQuery} className="space-y-4">
+              <textarea
+                value={qaQuery}
+                onChange={(e) => setQaQuery(e.target.value)}
+                placeholder="Ask about trade compliance, dispute resolution, or contract drafting..."
+                rows="3"
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-green-500 focus:border-green-500"
+              />
+              <button
+                type="submit"
+                disabled={loadingQa || !qaQuery.trim()}
+                className="w-full py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:bg-green-400 transition"
+              >
+                {loadingQa ? 'Searching Knowledge Base...' : 'Ask AI Assistant'}
+              </button>
+            </form>
+
+            {qaError && (
+              <div className="mt-4 p-3 text-sm text-red-700 bg-red-100 rounded-lg border border-red-300">
+                Error: {qaError}
+              </div>
+            )}
+            {qaAnswer && (
+              <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-300">
+                <p className="font-semibold text-green-800 mb-1">AI Response:</p>
+                <p className="text-gray-700">{qaAnswer}</p>
+              </div>
+            )}
+            
+          </div>
+        );
+      case 'list':
+      default:
+        return (
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-xl font-bold text-gray-800 flex items-center">
+                <List className="w-5 h-5 mr-2 text-indigo-600" />
+                Your Documents
+              </h2>
+            </div>
+            
+            {loadingDocs ? (
+              <p className="text-gray-500">Loading documents...</p>
+            ) : documents.length > 0 ? (
+              <div className="space-y-6">
+                {documents.map((doc) => (
+                  <DocumentCard key={doc.id} doc={doc} />
+                ))}
+              </div>
+            ) : (
+              <div className="p-8 text-center bg-gray-100 rounded-xl border border-dashed border-gray-300">
+                <p className="text-lg text-gray-500">No documents found. Click "Upload" to add a new file.</p>
+              </div>
+            )}
+          </div>
+        );
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-indigo-600 shadow-md">
+        <div className="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8 flex justify-between items-center">
+          <h1 className="text-xl font-bold text-white">
+            Advocate Client Portal
+          </h1>
+          <div className="flex items-center space-x-4">
+            <span className="text-white text-sm opacity-80 hidden sm:inline">User: {userId}</span>
+            <button
+              onClick={handleLogout}
+              className="bg-white text-indigo-600 py-1.5 px-3 rounded-full text-sm font-semibold hover:bg-indigo-100 transition flex items-center shadow"
+            >
+              <LogOut className="w-4 h-4 mr-1" />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <main className="max-w-7xl mx-auto py-8 sm:px-6 lg:px-8">
+        <div className="flex space-x-3 mb-6">
+          <button
+            onClick={() => setPage('list')}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition ${page === 'list' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'}`}
+          >
+            <List className="w-4 h-4 inline mr-2" />
+            Document List
+          </button>
+          <button
+            onClick={() => setPage('upload')}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition ${page === 'upload' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'}`}
+          >
+            <Upload className="w-4 h-4 inline mr-2" />
+            Upload Document
+          </button>
+          <button
+            onClick={() => setPage('qa')}
+            className={`px-4 py-2 text-sm font-medium rounded-full transition ${page === 'qa' ? 'bg-green-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'}`}
+          >
+            <ChevronDown className="w-4 h-4 inline mr-2" />
+            AI Assistant
+          </button>
+        </div>
+
+        {renderContent()}
+      </main>
+    </div>
+  );
+};
+
+
 const App = () => {
-  const [currentPage, setCurrentPage] = useState('Home');
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [token, setToken] = useState(null);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const renderPage = () => {
-    switch (currentPage) {
-      case 'Home':
-        return <HomePage setCurrentPage={setCurrentPage} />;
-      case 'PracticeAreas':
-        return <PublicationsPage />; 
-      case 'Publications':
-        return <PublicationsPage />;
-      case 'Contact':
-        return <AIAssistant />; 
-      case 'Portal':
-        return <SecurePortal isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />;
-      default:
-        return <HomePage setCurrentPage={setCurrentPage} />;
-    }
-  };
+  // Check for existing token on mount
+  useEffect(() => {
+    const storedToken = localStorage.getItem('authToken');
+    if (storedToken) {
+      // NOTE: In a real app, you would validate this token against the backend 
+      // or decode it to get the user ID before setting state.
+      // For this demo, we'll assume the token is valid and set a mock user ID.
+      setToken(storedToken);
+      setUserId('client@test.com'); // Re-set mock ID
+    }
+    setLoading(false);
+  }, []);
 
-  const NavItem = ({ name, page }) => (
-    <button
-      onClick={() => {
-        setCurrentPage(page);
-        setIsMobileMenuOpen(false); 
-      }}
-      className={`px-4 py-2 font-medium transition duration-200 rounded-lg 
-        ${currentPage === page 
-          ? `${PRIMARY_ACCENT_COLOR} border-b-2 border-[#A98C6A] ${TEXT_COLOR_PRIMARY}` 
-          : `${TEXT_COLOR_SECONDARY} hover:${TEXT_COLOR_PRIMARY} hover:bg-gray-100`
-        }`}
-    >
-      {name}
-    </button>
-  );
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-xl text-indigo-600">Loading...</p>
+      </div>
+    );
+  }
 
-  return (
-    <div className={`min-h-screen font-sans ${BG_COLOR}`}>
-      {/* Header and Navigation */}
-      <header className="bg-white shadow-lg sticky top-0 z-20">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          {/* Logo/Name */}
-          <div className={`text-2xl font-extrabold ${TEXT_COLOR_PRIMARY}`}>
-            <span className={PRIMARY_ACCENT_COLOR}>Silvia</span> Munjal
-          </div>
-
-          {/* Desktop Navigation Links */}
-          <nav className="hidden md:flex space-x-2">
-            <NavItem name="Home" page="Home" />
-            <NavItem name="Practice Areas" page="PracticeAreas" />
-            <NavItem name="Publications" page="Publications" />
-            <NavItem name="AI Assistant (Q&A)" page="Contact" />
-            <NavItem name="Secure Portal" page="Portal" />
-          </nav>
-          
-          {/* Mobile Menu Button */}
-          <div className="md:hidden">
-            <Button primary={false} icon={isMobileMenuOpen ? X : Menu} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
-              Menu
-            </Button>
-          </div>
-        </div>
-
-        {/* Mobile Menu Overlay */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-full left-0 w-full bg-white shadow-lg py-4 border-t border-gray-200">
-            <nav className="flex flex-col items-center space-y-3">
-              <NavItem name="Home" page="Home" />
-              <NavItem name="Practice Areas" page="PracticeAreas" />
-              <NavItem name="Publications" page="Publications" />
-              <NavItem name="AI Assistant (Q&A)" page="Contact" />
-              <NavItem name="Secure Portal" page="Portal" />
-            </nav>
-          </div>
-        )}
-      </header>
-
-      <main>
-        {renderPage()}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white mt-12 py-10">
-          <div className="container mx-auto px-4 text-center">
-              <p className="text-lg font-semibold mb-2">Silvia Munjal, Advocate</p>
-              <p className="text-sm text-gray-400">Built with React, Tailwind CSS, and a FastAPI/Python AI Backend.</p>
-              <p className="text-xs text-gray-500 mt-2">Copyright © 2025. All Rights Reserved.</p>
-          </div>
-      </footer>
-    </div>
-  );
+  return (
+    <div className="font-sans antialiased">
+      {token ? (
+        <PortalDashboard 
+          token={token} 
+          userId={userId}
+          setToken={setToken} 
+          setUserId={setUserId}
+        />
+      ) : (
+        <LoginScreen setToken={setToken} setUserId={setUserId} />
+      )}
+    </div>
+  );
 };
 
 export default App;
