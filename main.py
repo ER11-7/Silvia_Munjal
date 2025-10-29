@@ -1,6 +1,6 @@
 import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status, APIRouter, Body, UploadFile, File
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
@@ -56,9 +56,10 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
-class TokenRequest(BaseModel):
-    email: EmailStr
-    password: str
+# NOTE: TokenRequest is removed here and replaced by OAuth2PasswordRequestForm
+# class TokenRequest(BaseModel):
+#     email: EmailStr
+#     password: str
 
 class QueryRequest(BaseModel):
     query: str
@@ -152,11 +153,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
 auth_router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @auth_router.post("/login", response_model=Token)
-async def login_for_access_token(form_data: TokenRequest = Body(...)):
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Endpoint for Secure Client Login (FastAPI JWT Authentication).
+    NOTE: Uses OAuth2PasswordRequestForm to correctly handle form-data credentials.
     """
-    user = await db_get_user(form_data.email)
+    # OAuth2PasswordRequestForm uses 'username' field for email
+    user = await db_get_user(form_data.username)
     
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(
