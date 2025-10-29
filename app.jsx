@@ -277,7 +277,7 @@ const SecurePortal = ({ setIsLoggedIn, isLoggedIn }) => {
 
     // --- CONFIGURATION ---
     // The final live URL from Render deployment
-    const BASE_API_URL = "https://silvia-munjal.onrender.com"; 
+    const BASE_API_URL = "/api/index";; 
     // ---------------------
 
     const handleLogin = async (e) => {
