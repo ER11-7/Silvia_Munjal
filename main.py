@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI, Depends, HTTPException, status, APIRouter, Body, UploadFile, File
 from fastapi.security import OAuth2PasswordBearer
 from fastapi.middleware.cors import CORSMiddleware
@@ -6,7 +7,6 @@ from typing import Optional, List, Dict, Any
 from datetime import datetime, timedelta, timezone
 from jose import jwt, JWTError
 from pwdlib import PasswordHash
-import uvicorn
 import os
 import uuid
 import time # For simulation delay
