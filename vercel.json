@@ -34,18 +34,20 @@
 }
 ```
 
-### Final Action Plan
+### Next Steps (Mandatory)
 
-1.  **Delete Incorrect File:** In your terminal, run `git rm packages.json` to remove the typo'd file.
-2.  **Save Correct Files:** Ensure the `package.json` file (open on the right) is saved, and update your `vercel.json` file with the new code I provided above.
-3.  **Commit and Push:** Run the final Git commands to deploy the fix.
+Your next steps are to **overwrite** your local file with this clean code and push *only this change*.
+
+1.  **Replace Code:** Delete all the text in your local `vercel.json` file.
+2.  **Copy and Paste:** Copy the code from the Canvas above and paste it into your empty `vercel.json` file. Save it.
+3.  **Commit and Push the Fix:** Run these commands in your terminal to push *only* this fix.
 
     ```bash
-    # Stage the deletion and the updates
-    git add .
+    # Stage ONLY the vercel.json file
+    git add vercel.json
 
     # Commit the fix
-    git commit -m "FIX: Rename packages.json to package.json and update vercel.json routing"
+    git commit -m "FIX: Force clean vercel.json to resolve JSON parsing error"
 
     # Push to deploy
     git push
