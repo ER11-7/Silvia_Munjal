@@ -5,7 +5,7 @@
   "main": "index.js",
   "homepage": ".",
   "scripts": {
-    "build": "npx babel app.jsx --out-dir dist --presets @babel/preset-react && cp index.html dist/index.html",
+    "build": "npx babel app.jsx --out-file dist/app.js --presets @babel/preset-react && cp index.html dist/index.html",
     "start": "npx serve dist"
   },
   "dependencies": {
@@ -23,3 +23,4 @@
     "outputDirectory": "dist"
   }
 }
+
