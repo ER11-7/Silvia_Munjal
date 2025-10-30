@@ -25,7 +25,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "build/index.html"
+      "dest": "dist/index.html"
     }
   ]
 }
