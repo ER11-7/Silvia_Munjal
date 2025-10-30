@@ -1,0 +1,20 @@
+{
+  "name": "advocate-portal-client",
+  "version": "1.0.0",
+  "description": "Client-side React application for the Advocate Portal API Gateway.",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx babel app.jsx --out-dir dist --presets @babel/preset-react && cp index.html dist/index.html",
+    "start": "npx serve dist"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "lucide-react": "^0.284.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.23.0",
+    "@babel/core": "^7.23.3",
+    "@babel/preset-react": "^7.23.3"
+  }
+}
