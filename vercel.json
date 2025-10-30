@@ -2,14 +2,30 @@
   "version": 2,
   "builds": [
     {
+      "src": "package.json",
+      "use": "@vercel/static-build"
+    },
+    {
       "src": "main.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/auth/(.*)",
       "dest": "main.py"
+    },
+    {
+      "src": "/portal/(.*)",
+      "dest": "main.py"
+    },
+    {
+      "src": "/qa-chatbot",
+      "dest": "main.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "build/index.html"
     }
   ]
 }
