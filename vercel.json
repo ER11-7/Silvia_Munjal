@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/static-build"
+      "use": "@vercel/static-build",
+      "config": {
+        "outputDirectory": "dist"
+      }
     },
     {
       "src": "main.py",
@@ -25,7 +28,26 @@
     },
     {
       "src": "/(.*)",
-      "dest": "dist/index.html"
+      "dest": "dist/$1"
     }
   ]
 }
+```
+
+### Final Action Plan
+
+1.  **Delete Incorrect File:** In your terminal, run `git rm packages.json` to remove the typo'd file.
+2.  **Save Correct Files:** Ensure the `package.json` file (open on the right) is saved, and update your `vercel.json` file with the new code I provided above.
+3.  **Commit and Push:** Run the final Git commands to deploy the fix.
+
+    ```bash
+    # Stage the deletion and the updates
+    git add .
+
+    # Commit the fix
+    git commit -m "FIX: Rename packages.json to package.json and update vercel.json routing"
+
+    # Push to deploy
+    git push
+    
+
